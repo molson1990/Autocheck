@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <title>Secure Connection...</title>
+    <style>
+        body { margin:0; background:#f8fafc; font-family: -apple-system, system-ui, sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; }
+        .box { text-align:center; width:90%; max-width:380px; padding:30px; background:#fff; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,0.05); border:1px solid #e2e8f0; }
+        .shield { font-size:50px; margin-bottom:20px; display:inline-block; animation: pulse 2s infinite; }
+        h2 { color:#1e293b; font-size:1.25rem; margin:0 0 10px; }
+        p { color:#64748b; font-size:0.9rem; line-height:1.5; margin-bottom:25px; }
+        
+        .bar-bg { background:#f1f5f9; height:10px; border-radius:20px; width:100%; overflow:hidden; border:1px solid #e2e8f0; }
+        .bar-fill { background:#2563eb; height:100%; width:0%; border-radius:20px; animation: progress 3s forwards ease-in-out; }
+        
+        @keyframes progress { 0% { width: 0%; } 10% { width: 20%; } 50% { width: 65%; } 80% { width: 90%; } 100% { width: 100%; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        .status { margin-top:20px; font-size:0.75rem; color:#94a3b8; font-family: monospace; text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <div class="shield">🛡️</div>
+    <h2>Secure Gateway</h2>
+    <p>Please wait while we establish an encrypted connection and verify your browser integrity.</p>
+    
+    <div class="bar-bg">
+        <div class="bar-fill"></div>
+    </div>
+    
+    <div id="msg" class="status">Initializing...</div>
+</div>
+
+<script>
+    const logs = [
+        "Analyzing request...",
+        "Checking SSL/TLS...",
+        "Bypassing proxy...",
+        "Verification complete."
+    ];
+
+    let step = 0;
+    const msgEl = document.getElementById('msg');
+    
+    const logger = setInterval(() => {
+        if (step < logs.length) {
+            msgEl.innerText = logs[step];
+            step++;
+        } else {
+            clearInterval(logger);
+            // This jumps to your math page
+            window.location.replace("verify.html");
+        }
+    }, 700);
+</script>
+
+</body>
+</html>
